@@ -1,0 +1,75 @@
+public class MergeSorter {
+
+    private static final int INSERTION_SORT_THRESHOLD = 16;
+
+    public static void sort(int[] array) {
+        if (array == null || array.length < 2) {
+            return;
+        }
+
+        int[] buffer = new int[array.length];
+        mergeSort(array, buffer, 0, array.length - 1);
+    }
+    private static void mergeSort(int[] array, int[] buffer, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+
+        if (right - left + 1 <= INSERTION_SORT_THRESHOLD) {
+            insertionSort(array, left, right);
+            return;
+        }
+
+        int mid = left + (right - left) / 2;
+
+        mergeSort(array, buffer, left, mid);
+        mergeSort(array, buffer, mid + 1, right);
+
+        merge(array, buffer, left, mid, right);
+    }
+    private static void insertionSort(int[] array, int left, int right) {
+        for (int i = left + 1; i <= right; i++) {
+            int key = array[i];
+            int j = i - 1;
+
+            while (j >= left && array[j] > key) {
+                array[j + 1] = array[j];
+                j--;
+            }
+
+            array[j + 1] = key;
+        }
+    }
+    private static void merge(int[] array, int[] buffer, int left, int mid, int right) {
+        for (int i = left; i <= right; i++) {
+            buffer[i] = array[i];
+        }
+
+        int i = left;
+        int j = mid + 1;
+        int k = left;
+
+        while (i <= mid && j <= right) {
+            if (buffer[i] <= buffer[j]) {
+                array[k] = buffer[i];
+                i++;
+            } else {
+                array[k] = buffer[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i <= mid) {
+            array[k] = buffer[i];
+            i++;
+            k++;
+        }
+
+        while (j <= right) {
+            array[k] = buffer[j];
+            j++;
+            k++;
+        }
+    }
+}

@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
@@ -10,27 +9,26 @@ public class Main {
 
         for (int test = 1; test <= 100; test++) {
 
-            int size = random.nextInt(100) + 1;
-            int[] array = new int[size];
+            int size = random.nextInt(100) + 2;
+            Point[] points = new Point[size];
 
             for (int i = 0; i < size; i++) {
-                array[i] = random.nextInt(1000);
+                double x = random.nextInt(1000);
+                double y = random.nextInt(1000);
+
+                points[i] = new Point(x, y);
             }
 
-            int k = random.nextInt(size);
+            double expected =
+                    ClosestPairSolver.bruteForceDistance(points);
 
-            int[] expectedArray = array.clone();
-            Arrays.sort(expectedArray);
-            int expected = expectedArray[k];
+            double actual =
+                    ClosestPairSolver.findClosestDistance(points);
 
-            int[] actualArray = array.clone();
-            int actual = DeterministicSelector.select(actualArray, k);
-
-            if (expected != actual) {
+            if (Math.abs(expected - actual) > 1e-9) {
                 allPassed = false;
 
                 System.out.println("Test " + test + ": FAILED");
-                System.out.println("k = " + k);
                 System.out.println("Expected: " + expected);
                 System.out.println("Actual:   " + actual);
 
@@ -39,7 +37,7 @@ public class Main {
         }
 
         if (allPassed) {
-            System.out.println("All 100 Deterministic Select tests PASSED!");
+            System.out.println("All 100 Closest Pair tests PASSED!");
         }
     }
 }

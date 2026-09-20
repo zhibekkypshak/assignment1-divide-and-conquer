@@ -1,30 +1,45 @@
 import java.util.Arrays;
+import java.util.Random;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        testQuickSort(new int[]{8, 3, 5, 1, 9, 2, 7, 4}, "Random");
-        testQuickSort(new int[]{1, 2, 3, 4, 5, 6}, "Sorted");
-        testQuickSort(new int[]{6, 5, 4, 3, 2, 1}, "Reverse-sorted");
-        testQuickSort(new int[]{4, 2, 4, 1, 2, 4, 1}, "Duplicates");
-        testQuickSort(new int[]{}, "Empty");
-        testQuickSort(new int[]{5}, "Single element");
-    }
+        Random random = new Random();
+        boolean allPassed = true;
 
-    private static void testQuickSort(int[] array, String testName) {
+        for (int test = 1; test <= 100; test++) {
 
-        int[] expected = array.clone();
-        Arrays.sort(expected);
+            int size = random.nextInt(100) + 1;
+            int[] array = new int[size];
 
-        int[] actual = array.clone();
-        QuickSorter.sort(actual);
+            for (int i = 0; i < size; i++) {
+                array[i] = random.nextInt(1000);
+            }
 
-        boolean passed = Arrays.equals(expected, actual);
+            int k = random.nextInt(size);
 
-        System.out.println(testName + ": " + (passed ? "PASSED" : "FAILED"));
-        System.out.println("Expected: " + Arrays.toString(expected));
-        System.out.println("Actual:   " + Arrays.toString(actual));
-        System.out.println();
+            int[] expectedArray = array.clone();
+            Arrays.sort(expectedArray);
+            int expected = expectedArray[k];
+
+            int[] actualArray = array.clone();
+            int actual = DeterministicSelector.select(actualArray, k);
+
+            if (expected != actual) {
+                allPassed = false;
+
+                System.out.println("Test " + test + ": FAILED");
+                System.out.println("k = " + k);
+                System.out.println("Expected: " + expected);
+                System.out.println("Actual:   " + actual);
+
+                break;
+            }
+        }
+
+        if (allPassed) {
+            System.out.println("All 100 Deterministic Select tests PASSED!");
+        }
     }
 }
